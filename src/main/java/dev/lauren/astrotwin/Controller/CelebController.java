@@ -98,6 +98,10 @@ public class CelebController {
         return new ResponseEntity<>(celebService.findAll(), HttpStatus.OK);
     }
     
+    @GetMapping("/sayHello")
+    public String sayHello() {
+        return "Hello";
+    }
     //@GetMapping("/getChartById/{id}")
     //public ResponseEntity<Optional<CelebChartModel>> getCelebChartById(@PathVariable ObjectId id) {
     //    return new ResponseEntity<>(celebService.getCelebChartById(id), HttpStatus.OK);
