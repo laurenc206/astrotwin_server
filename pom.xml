@@ -11,7 +11,7 @@
 	<groupId>dev.lauren</groupId>
 	<artifactId>astrotwin</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 	<name>astrotwin</name>
 	<description>AstroTwin backend demo</description>
 	<properties>

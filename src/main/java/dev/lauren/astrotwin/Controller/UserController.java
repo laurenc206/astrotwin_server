@@ -25,7 +25,8 @@ import org.jsoup.Jsoup;
 
 @RestController
 @RequestMapping("/api/v1/user")
-@CrossOrigin(origins = "https://main--fascinating-mermaid-b48a28.netlify.app/")
+@CrossOrigin(origins = "http://3.94.188.92:3000")
+
 public class UserController {
     @Autowired
     private UserService userService;
