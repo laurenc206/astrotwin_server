@@ -28,7 +28,8 @@ public class ChartService {
     // for windows =
     // public static final String ASTROLOG_FPATH = "\\src\\main\\java\\astrotwin\\Astrolog\\astrolog.exe";
     // for mac = 
-    private static final String ASTROLOG_FPATH = "/src/main/java/dev/lauren/astrotwin/astrolog/astrolog/astrolog";
+    //private static final String ASTROLOG_FPATH = "/src/main/java/dev/lauren/astrotwin/astrolog/astrolog/astrolog";
+    private static final String ASTROLOG_FPATH = "/astrotwin_springboot/src/main/java/dev/lauren/astrotwin/astrolog/astrolog/astrolog";
 
     // parsing variables
     private static final int CHART_NODE_IDX = 13;

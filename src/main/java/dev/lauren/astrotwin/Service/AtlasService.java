@@ -10,7 +10,9 @@ import dev.lauren.astrotwin.Model.AtlasModel;
 @Service
 public class AtlasService {
 
-    private static final String ASTROLOG_FPATH = "/src/main/java/dev/lauren/astrotwin/astrolog/astrolog/astrolog";
+    //private static final String ASTROLOG_FPATH = "/src/main/java/dev/lauren/astrotwin/astrolog/astrolog/astrolog";
+    
+    private static final String ASTROLOG_FPATH = "/astrotwin_springboot/src/main/java/dev/lauren/astrotwin/astrolog/astrolog/astrolog";
     private static final String defaultName = "User";
 
     public static AtlasModel getLocation(String town, String country, String code, int birthYear) throws IOException, InterruptedException {
@@ -98,6 +100,9 @@ public class AtlasService {
                 }
             }
         }
+        System.out.println("fpath atlas service " + ASTROLOG_FPATH);
+        System.out.println("atlas service ");
+        System.out.println(sb.toString());
         return sb.toString();
     }
 
