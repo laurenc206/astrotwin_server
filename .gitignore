@@ -34,3 +34,7 @@ build/
 
 ### ENV Files ###
 .env
+
+### Astrolog ###
+#since this is machine dependent it must be downloaded and compiled seperately
+src/main/java/dev/lauren/astrotwin/astrolog

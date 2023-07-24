@@ -12,7 +12,7 @@ public class AtlasService {
 
     //private static final String ASTROLOG_FPATH = "/src/main/java/dev/lauren/astrotwin/astrolog/astrolog/astrolog";
     
-    private static final String ASTROLOG_FPATH = "/astrotwin_springboot/src/main/java/dev/lauren/astrotwin/astrolog/astrolog/astrolog";
+    private static final String ASTROLOG_FPATH = "/astrotwin_springboot/src/main/java/dev/lauren/astrotwin/astrolog/astrolog";
     private static final String defaultName = "User";
 
     public static AtlasModel getLocation(String town, String country, String code, int birthYear) throws IOException, InterruptedException {

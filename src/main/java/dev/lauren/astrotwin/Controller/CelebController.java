@@ -24,8 +24,9 @@ import dev.lauren.astrotwin.Service.CelebService;
 
 @RestController
 @RequestMapping("/api/v1/celeb")
-@CrossOrigin(origins = "http://3.94.188.92:3000")
+//@CrossOrigin(origins = "http://3.94.188.92:3000")
 //@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "http://astrotwin.net:3000")
 public class CelebController {
     @Autowired
     private CelebService celebService;
