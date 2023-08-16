@@ -1,10 +1,15 @@
 package dev.lauren.astrotwin.Controller;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.bson.conversions.Bson;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -19,14 +24,17 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.mongodb.client.model.Projections;
+
 import dev.lauren.astrotwin.Model.CelebModel;
 import dev.lauren.astrotwin.Service.CelebService;
 
 @RestController
 @RequestMapping("/api/v1/celeb")
 //@CrossOrigin(origins = "http://3.94.188.92:3000")
-//@CrossOrigin(origins = "http://localhost:3000")
-@CrossOrigin(origins = "http://astrotwin.net:3000")
+@CrossOrigin(origins = "http://localhost:3000")
+//@CrossOrigin(origins = "http://astrotwin.net:3000")
 public class CelebController {
     @Autowired
     private CelebService celebService;
@@ -34,6 +42,8 @@ public class CelebController {
     @PostMapping("/insertCeleb")
     public ResponseEntity<CelebModel> insertCeleb(@RequestBody Map<String, String> payload) {
         System.out.println("insert celeb");
+       
+        
         try {
             CelebModel response = celebService.insertCeleb(payload);
             return new ResponseEntity<>(response, HttpStatus.CREATED);
@@ -96,14 +106,11 @@ public class CelebController {
     }
 
     @GetMapping("/search/findAll")
-    public ResponseEntity<List<CelebModel>> findAll(){
+    public ResponseEntity<Set<String>> findAll(){
+           
         return new ResponseEntity<>(celebService.findAll(), HttpStatus.OK);
     }
     
-    @GetMapping("/sayHello")
-    public String sayHello() {
-        return "Hello";
-    }
     //@GetMapping("/getChartById/{id}")
     //public ResponseEntity<Optional<CelebChartModel>> getCelebChartById(@PathVariable ObjectId id) {
     //    return new ResponseEntity<>(celebService.getCelebChartById(id), HttpStatus.OK);

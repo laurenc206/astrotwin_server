@@ -16,6 +16,7 @@ import org.springframework.data.mongodb.core.mapping.DocumentReference;
 public class CelebModel {
     @Id
     private ObjectId id;
+    
     private String name;
     private LocalDateTime bday;
     private AtlasModel blocation;

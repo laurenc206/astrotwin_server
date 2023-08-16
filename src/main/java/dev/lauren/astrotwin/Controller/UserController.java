@@ -26,8 +26,8 @@ import org.jsoup.Jsoup;
 @RestController
 @RequestMapping("/api/v1/user")
 //@CrossOrigin(origins = "http://3.94.188.92:3000")
-//@CrossOrigin(origins = "http://localhost:3000")
-@CrossOrigin(origins = "http://astrotwin.net:3000")
+@CrossOrigin(origins = "http://localhost:3000")
+//@CrossOrigin(origins = "http://astrotwin.net:3000")
 public class UserController {
     @Autowired
     private UserService userService;

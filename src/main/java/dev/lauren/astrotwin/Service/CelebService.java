@@ -2,9 +2,12 @@ package dev.lauren.astrotwin.Service;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import org.bson.types.ObjectId;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -28,6 +31,10 @@ public class CelebService {
     private CelebsRepository celebsRepository;
     @Autowired
     private CelebChartsRepository celebChartRepository;
+    boolean listInitialized = false;
+    //Set<CelebModel> celebCache = new HashSet<>();
+
+    Map<String, CelebModel> celebCache = new HashMap<>();
     
     public CelebModel insertCeleb(Map<String, String> celebData) throws Exception {
         
@@ -37,9 +44,10 @@ public class CelebService {
             System.out.println("value: " + e.getValue());
         }
         String name = celebData.get("name");
-        Optional<CelebModel> searchCeleb = searchCelebByName(name);
-        if (searchCeleb.isPresent()) return searchCeleb.get();
-    
+        
+        if (listInitialized && celebCache.containsKey(name)) {
+            return celebCache.get(name);
+        }
         CelebModel celeb = new CelebModel();
         String method = celebData.get("type");
         if (method.equals("name")) {
@@ -117,7 +125,7 @@ public class CelebService {
             CelebChartModel celebChartModel = celebChartRepository.insert(new CelebChartModel(chart));
             celeb.setCelebChart(celebChartModel);
             CelebModel celebDB = celebsRepository.insert(celeb);
-            
+            celebCache.put(celebDB.getName(), celebDB);
             return celebDB;
 
         } catch (Exception e1) {
@@ -220,15 +228,26 @@ public class CelebService {
     }
     // get celeb info
     public Optional<CelebModel> searchCelebByName(String name) {
-        return celebsRepository.findByName(name);
+        if (listInitialized) {
+            return Optional.ofNullable(celebCache.getOrDefault(name, null));
+        } else {
+            return celebsRepository.findByName(name);
+        }
     }
 
     public Optional<CelebModel> searchCelebById(ObjectId id) {
         return celebsRepository.findById(id);
     }
 
-    public List<CelebModel> findAll() {
-        return celebsRepository.findAll();
+    public Set<String> findAll() {
+        if (!listInitialized) {
+            for (CelebModel celeb : celebsRepository.findAll()) {
+                celebCache.putIfAbsent(celeb.getName(), celeb);
+            }
+            
+            listInitialized = true;   
+        }
+        return celebCache.keySet();
     }
 
 }
