@@ -15,9 +15,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import dev.lauren.astrotwin.Model.ContactForm;
 import dev.lauren.astrotwin.Model.MatchForm;
 import dev.lauren.astrotwin.Model.UserForm;
 import dev.lauren.astrotwin.Model.UserModel;
+import dev.lauren.astrotwin.Service.EmailService;
 import dev.lauren.astrotwin.Service.MatchService;
 import dev.lauren.astrotwin.Service.UserService;
 import org.jsoup.Jsoup;
@@ -34,7 +37,12 @@ public class UserController {
     @Autowired
     private MatchService matchService;
     @Autowired
+    private EmailService emailService;
+    @Autowired
     private Environment env;
+
+
+
     @PostMapping
     public ResponseEntity<UserModel> insertUser(@RequestBody UserForm payload) {
         System.out.println("insertUser");
@@ -71,6 +79,12 @@ public class UserController {
             e.printStackTrace();
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @PostMapping("/contactMe")
+    public ResponseEntity<String> sendFeedback(@RequestBody ContactForm payload) {
+        String response = emailService.sendFeedback(payload);
+        return new ResponseEntity<>(response, response.equals("Success") ? HttpStatus.OK : HttpStatus.BAD_GATEWAY);
     }
   
 }
