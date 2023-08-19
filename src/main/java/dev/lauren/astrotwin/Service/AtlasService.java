@@ -12,10 +12,11 @@ public class AtlasService {
 
     //private static final String ASTROLOG_FPATH = "/src/main/java/dev/lauren/astrotwin/astrolog/astrolog/astrolog";
     
-    private static final String ASTROLOG_FPATH = "/astrotwin_springboot/src/main/java/dev/lauren/astrotwin/astrolog/astrolog";
+    //private static final String ASTROLOG_FPATH = "/astrotwin_springboot/src/main/java/dev/lauren/astrotwin/astrolog/astrolog";
+    //private static final String ASTROLOG_FPATH = System.getenv("ASTROLOG_FPATH");
     private static final String defaultName = "User";
 
-    public static AtlasModel getLocation(String town, String country, String code, int birthYear) throws IOException, InterruptedException {
+    public static AtlasModel getLocation(String town, String country, String code, int birthYear, String AstrologFilePath) throws IOException, InterruptedException {
         AtlasModel resultAtlasModel = new AtlasModel();
         
         boolean locationFound = false;
@@ -25,7 +26,7 @@ public class AtlasService {
         String placeIdentifyStr = (country.equals("United States") || country.equals("Canada")) ? code : country;
         
 
-        String output = getLocationData(defaultName, town, birthYear);
+        String output = getLocationData(defaultName, town, birthYear, AstrologFilePath);
         String[] lines = output.split("\n");
             
         for (int i = 1; i < lines.length; i++) { // first line is just a header and not part of results    
@@ -79,8 +80,8 @@ public class AtlasService {
     }
 
     // get astrolog data
-    public static String getLocationData(String name, String town, int birthYear) throws InterruptedException, IOException {
-        String[] args = {System.getProperty("user.dir").concat(ASTROLOG_FPATH), 
+    public static String getLocationData(String name, String town, int birthYear, String AstrologFilePath) throws InterruptedException, IOException {
+        String[] args = {System.getProperty("user.dir").concat(AstrologFilePath), 
                          "-e", "-e", "-zi", name, town,
                          "-qy", String.valueOf(birthYear) ,"-N"};
         StringBuilder sb = new StringBuilder("");
@@ -100,7 +101,7 @@ public class AtlasService {
                 }
             }
         }
-        System.out.println("fpath atlas service " + ASTROLOG_FPATH);
+        System.out.println("fpath atlas service " + AstrologFilePath);
         System.out.println("atlas service ");
         System.out.println(sb.toString());
         return sb.toString();

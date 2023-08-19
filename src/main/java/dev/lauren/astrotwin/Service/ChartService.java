@@ -1,5 +1,4 @@
 package dev.lauren.astrotwin.Service;
-
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,11 +7,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
 import javax.imageio.IIOException;
-
 import org.springframework.stereotype.Service;
-
 import dev.lauren.astrotwin.Model.AtlasModel;
 import dev.lauren.astrotwin.Model.CelebModel;
 import dev.lauren.astrotwin.Model.UserForm;
@@ -20,9 +16,11 @@ import dev.lauren.astrotwin.Model.AstrologModel;
 import dev.lauren.astrotwin.Model.UserModel;
 import lombok.AllArgsConstructor;
 
+
 // Does not access chart database
 // This service is meant for calculating charts where
 // caller can then use or insert chart model
+
 @Service
 public class ChartService {
     // for windows =
@@ -30,7 +28,7 @@ public class ChartService {
     // for mac = 
     //private static final String ASTROLOG_FPATH = "/src/main/java/dev/lauren/astrotwin/astrolog/astrolog";
     // for running jar file in ec2 instance =
-    private static final String ASTROLOG_FPATH = "/astrotwin_springboot/src/main/java/dev/lauren/astrotwin/astrolog/astrolog";
+
 
     // parsing variables
     private static final int CHART_NODE_IDX = 13;
@@ -44,10 +42,10 @@ public class ChartService {
     private static final int NUM_SIGN = 12;
 
 
-    public static AstrologModel calculateChart(CelebModel celeb) throws InterruptedException, IOException {
+    public static AstrologModel calculateChart(CelebModel celeb, String AstrologFilePath) throws InterruptedException, IOException {
         AstrologModel resChart = new AstrologModel();
         System.out.println(celeb);
-        String inputStr = getChartData(celeb.getBlocation(), celeb.getBday());
+        String inputStr = getChartData(celeb.getBlocation(), celeb.getBday(), AstrologFilePath);
         String[] astrologOutput = inputStr.split(System.lineSeparator());
         if (astrologOutput.length < 2) throw new IIOException("Unable to retrieve chart from astrolog");
         
@@ -60,9 +58,9 @@ public class ChartService {
         return resChart;
     }
 
-    public static AstrologModel calculateChart(UserModel user) throws InterruptedException, IOException {
+    public static AstrologModel calculateChart(UserModel user, String AstrologFilePath) throws InterruptedException, IOException {
         AstrologModel resChart = new AstrologModel();
-
+        
         //String locationStr = user.getBstate().length() == 0 ? user.getBtown() + ", " + user.getBcountry() :
         //                                                      user.getBtown() + ", " + user.getBstate() + ", " + user.getBcountry();
         //
@@ -75,9 +73,10 @@ public class ChartService {
         AtlasModel location = AtlasService.getLocation(userData.getLocation().getTown(), 
                                                        userData.getLocation().getCountry(), 
                                                        userData.getLocation().getCode(), 
-                                                       userData.getDate().getYear());
+                                                       userData.getDate().getYear(),
+                                                       AstrologFilePath);
         
-        String inputStr = getChartData(location, userData.getDate()); // gets data from astrolog program
+        String inputStr = getChartData(location, userData.getDate(), AstrologFilePath); // gets data from astrolog program
         String[] astrologOutput = inputStr.split(System.lineSeparator());
         if (astrologOutput.length < 2) throw new IIOException("Unable to retrieve chart from astrolog");
         
@@ -92,11 +91,11 @@ public class ChartService {
 
     // run astrolog program to get chart information for parsing
     // return output string 
-    private static String getChartData(AtlasModel location, LocalDateTime birthDateTime) throws InterruptedException, IOException  {     
+    private static String getChartData(AtlasModel location, LocalDateTime birthDateTime, String AstrologFilePath) throws InterruptedException, IOException  {     
   
         System.out.println(location.getTown() + location.getLatitude() + " " + location.getLongitude() + " " + birthDateTime.toString() + location.getZone());
         System.out.println("hour" + String.valueOf(birthDateTime.getHour()));
-        String[] args = {System.getProperty("user.dir").concat(ASTROLOG_FPATH),  
+        String[] args = {System.getProperty("user.dir").concat(AstrologFilePath),  
                             "-v", "-j", "-qa", 
                             String.valueOf(birthDateTime.getMonthValue()), 
                             String.valueOf(birthDateTime.getDayOfMonth()), 

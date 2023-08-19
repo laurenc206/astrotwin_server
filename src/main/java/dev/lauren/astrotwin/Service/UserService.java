@@ -27,13 +27,13 @@ public class UserService {
         //userCache = new HashMap<>();
     }
     
-    public UserModel createUser(UserForm userData) {
+    public UserModel createUser(UserForm userData, String AstrologFilePath) {
         try {
             System.out.println(userData.toString());
             UserModel user = new UserModel();
             user.setUserData(userData);
             
-            AstrologModel userChart = ChartService.calculateChart(user);
+            AstrologModel userChart = ChartService.calculateChart(user, AstrologFilePath);
             
             List<ChartNode> chart = new ArrayList<>();
             

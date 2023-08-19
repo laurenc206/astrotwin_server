@@ -1,20 +1,17 @@
 package dev.lauren.astrotwin.Controller;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
-import java.util.stream.Collectors;
-
-import org.bson.conversions.Bson;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -24,9 +21,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.mongodb.client.model.Projections;
-
 import dev.lauren.astrotwin.Model.CelebModel;
 import dev.lauren.astrotwin.Service.CelebService;
 
@@ -38,14 +32,17 @@ import dev.lauren.astrotwin.Service.CelebService;
 public class CelebController {
     @Autowired
     private CelebService celebService;
+    @Autowired
+    private Environment env;
+    
 
     @PostMapping("/insertCeleb")
     public ResponseEntity<CelebModel> insertCeleb(@RequestBody Map<String, String> payload) {
         System.out.println("insert celeb");
-       
+        String astrologFilePath = env.getProperty("ASTROLOG_FPATH");
         
         try {
-            CelebModel response = celebService.insertCeleb(payload);
+            CelebModel response = celebService.insertCeleb(payload, astrologFilePath);
             return new ResponseEntity<>(response, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
@@ -58,8 +55,9 @@ public class CelebController {
         Map<String,String> payload= new HashMap<>();
         payload.put("name", name);
         payload.put("type", "name");
+        String astrologFilePath = env.getProperty("ASTROLOG_FPATH");
         try {
-            CelebModel response = celebService.insertCeleb(payload);
+            CelebModel response = celebService.insertCeleb(payload, astrologFilePath);
             return new ResponseEntity<>(response, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
@@ -71,6 +69,7 @@ public class CelebController {
         Random rand = new Random();
         List<String> names = new ArrayList<>();
         final String url = "https://www.telltalesonline.com/26925/popular-celebs/";
+        String astrologFilePath = env.getProperty("ASTROLOG_FPATH");
         try {
             // get list of names
             Document response = Jsoup.connect(url).userAgent("Mozilla").get();
@@ -85,7 +84,7 @@ public class CelebController {
                 payload.put("name", name);
                 payload.put("type", "name");
                 try {
-                    CelebModel celebResponse = celebService.insertCeleb(payload);
+                    CelebModel celebResponse = celebService.insertCeleb(payload, astrologFilePath);
                     System.out.println(celebResponse.getName() + " added");
                 } catch (Exception e) {
                     System.out.println(e);

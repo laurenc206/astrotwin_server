@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import dev.lauren.astrotwin.Model.ContactForm;
 import dev.lauren.astrotwin.Model.MatchForm;
 import dev.lauren.astrotwin.Model.UserForm;
@@ -32,6 +31,7 @@ import org.jsoup.Jsoup;
 @CrossOrigin(origins = "http://localhost:3000")
 //@CrossOrigin(origins = "http://astrotwin.net:3000")
 public class UserController {
+
     @Autowired
     private UserService userService;
     @Autowired
@@ -43,11 +43,13 @@ public class UserController {
 
 
 
+
     @PostMapping
     public ResponseEntity<UserModel> insertUser(@RequestBody UserForm payload) {
         System.out.println("insertUser");
         System.out.println(payload.toString());
-        return new ResponseEntity<>(userService.createUser(payload), HttpStatus.CREATED);
+        String astrologFilePath = env.getProperty("ASTROLOG_FPATH");
+        return new ResponseEntity<>(userService.createUser(payload, astrologFilePath), HttpStatus.CREATED);
     }
 
     @GetMapping("/getUser/{userId}")

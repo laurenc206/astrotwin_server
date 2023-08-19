@@ -36,7 +36,7 @@ public class CelebService {
 
     Map<String, CelebModel> celebCache = new HashMap<>();
     
-    public CelebModel insertCeleb(Map<String, String> celebData) throws Exception {
+    public CelebModel insertCeleb(Map<String, String> celebData, String AstrologFilePath) throws Exception {
         
         System.out.println("Insert celeb");
         for (Map.Entry<String, String> e : celebData.entrySet()) {
@@ -95,7 +95,8 @@ public class CelebService {
                     AtlasModel blocation = AtlasService.getLocation(celebData.get("town"), 
                                                                     celebData.get("country"), 
                                                                     celebData.get("state"), 
-                                                                    Integer.parseInt(celebData.get("year")));
+                                                                    Integer.parseInt(celebData.get("year")),
+                                                                    AstrologFilePath);
                     celeb.setBlocation(blocation);
             
                 } catch (Exception e) {
@@ -107,7 +108,7 @@ public class CelebService {
 
         // calculate celeb chart
         try {
-            AstrologModel celebChart = ChartService.calculateChart(celeb);           
+            AstrologModel celebChart = ChartService.calculateChart(celeb, AstrologFilePath);           
             List<ChartNode> chart = new ArrayList<>();
 
             for (Map.Entry<String,String> placement : celebChart.getSignMap().entrySet()) {
