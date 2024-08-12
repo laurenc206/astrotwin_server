@@ -65,7 +65,7 @@ public class CelebService {
                 if (imageElement != null) {
                     String imageSrc = imageElement.attr("src");
                     System.out.println("image src " + imageSrc);
-                    celeb.setImageUrl("http://www.astro.com/" + imageSrc);
+                    celeb.setImageUrl(imageSrc);
                 }
                 
             }  catch (Exception e1) {

@@ -53,16 +53,14 @@ public class UserService {
             user.setUserChart(userChartModel);
 
             user.setChartId(userChartModel.getId().toHexString());
-
+            
             // set formatted date, time and location strings for frontend
             DateTimeFormatter dateformatter = DateTimeFormatter.ofPattern("MMMM dd, yyyy");
             DateTimeFormatter timeformatter = DateTimeFormatter.ofPattern("h:mm a");
-            user.setDayStr(dateformatter.format(user.getUserData().getDate()));
-            user.setTimeStr(timeformatter.format(user.getUserData().getDate()));
-            String locStr = userData.getLocation().getTown() 
-                            + ", " + userData.getLocation().getRegion() 
-                            + ", " + userData.getLocation().getCountry();
-            user.setLocationStr(locStr);
+            user.setDayStr(dateformatter.format(user.getUserData().getBirthday()));
+            user.setTimeStr(timeformatter.format(user.getUserData().getBirthday()));
+ 
+            user.setLocationStr(user.getUserData().getLocation().getText());
             UserModel userDB = usersRepository.insert(user);
               
             return userDB;

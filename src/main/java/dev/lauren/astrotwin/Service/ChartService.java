@@ -70,13 +70,13 @@ public class ChartService {
         //AtlasModel location = AtlasService.getLocation(ASTROLOG_FPATH, ASTROLOG_FPATH, ASTROLOG_FPATH, ASC_IDX)  
         UserForm userData = user.getUserData();
         
-        AtlasModel location = AtlasService.getLocation(userData.getLocation().getTown(), 
-                                                       userData.getLocation().getCountry(), 
-                                                       userData.getLocation().getCode(), 
-                                                       userData.getDate().getYear(),
-                                                       AstrologFilePath);
+        //AtlasModel location = AtlasService.getLocation(userData.getLocation().getTown(), 
+        //                                               userData.getLocation().getCountry(), 
+        //                                               userData.getLocation().getCode(), 
+        //                                               userData.getDate().getYear(),
+        //                                               AstrologFilePath);
         
-        String inputStr = getChartData(location, userData.getDate(), AstrologFilePath); // gets data from astrolog program
+        String inputStr = getChartData(userData, AstrologFilePath); // gets data from astrolog program
         String[] astrologOutput = inputStr.split(System.lineSeparator());
         if (astrologOutput.length < 2) throw new IIOException("Unable to retrieve chart from astrolog");
         
@@ -103,6 +103,56 @@ public class ChartService {
                             String.valueOf(birthDateTime.getHour()) + ":" + String.valueOf(birthDateTime.getMinute()), 
                             location.getZone(), location.getLongitude(), location.getLatitude()};
         
+        StringBuilder sb = new StringBuilder("");
+        ProcessBuilder pb = new ProcessBuilder(args);
+        Process process = pb.start(); 
+        int waitFlag = process.waitFor();
+        System.out.print(process.getErrorStream().read());
+        System.out.println(waitFlag);
+        InputStream error = process.getErrorStream();
+
+    // Read from InputStream
+        for (int k = 0; k < error.available(); ++k) {
+            System.out.println("Error stream = " + error.read());
+        }
+        //if (waitFlag == 0) {
+            if (process.exitValue() == 0) {
+                BufferedInputStream in = (BufferedInputStream) process.getInputStream();
+                System.out.println(in.read());
+                byte[] contents = new byte[1024];
+                int bytesRead = 0;
+
+                while ((bytesRead = in.read(contents)) != -1) {
+                    sb.append(new String(contents, 0, bytesRead));
+                }
+            }
+        //}
+        System.out.println(sb.toString());
+        return sb.toString();
+    }
+
+    // run astrolog program to get chart information for parsing
+    // return output string 
+    private static String getChartData(UserForm user, String AstrologFilePath) throws InterruptedException, IOException  {     
+        
+        //System.out.println(location.getTown() + location.getLatitude() + " " + location.getLongitude() + " " + birthDateTime.toString() + location.getZone());
+        //System.out.println("hour" + String.valueOf(birthDateTime.getHour()));
+        String[] args = {System.getProperty("user.dir").concat(AstrologFilePath),  
+                            "-v", "-j", "-qb", 
+                            String.valueOf(user.getBirthday_UTC().getMonthValue()), 
+                            String.valueOf(user.getBirthday_UTC().getDayOfMonth()), 
+                            String.valueOf(user.getBirthday_UTC().getYear()), 
+                            String.valueOf(user.getBirthday_UTC().getHour()) + ":" + String.valueOf(user.getBirthday_UTC().getMinute()),
+                            String.valueOf("0"),
+                            String.valueOf("0"),
+                            String.valueOf(user.getLocation().getLng()),
+                            String.valueOf(user.getLocation().getLat())
+                        };
+        
+        System.out.println("User get chart data:");
+        for (String arg: args) {
+            System.out.println(arg);
+        }
         StringBuilder sb = new StringBuilder("");
         ProcessBuilder pb = new ProcessBuilder(args);
         Process process = pb.start(); 
