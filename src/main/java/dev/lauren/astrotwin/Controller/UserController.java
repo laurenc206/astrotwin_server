@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import dev.lauren.astrotwin.Model.ContactForm;
 import dev.lauren.astrotwin.Model.MatchForm;
+import dev.lauren.astrotwin.Model.SearchModel;
 import dev.lauren.astrotwin.Model.UserForm;
 import dev.lauren.astrotwin.Model.UserModel;
 import dev.lauren.astrotwin.Service.EmailService;
@@ -52,8 +53,9 @@ public class UserController {
         return new ResponseEntity<>(userService.createUser(payload, astrologFilePath), HttpStatus.CREATED);
     }
 
-    @GetMapping("/getUser/{userId}")
-    public ResponseEntity<Optional<UserModel>> getUser(@PathVariable String userId) {
+    @GetMapping("/getUser")
+    public ResponseEntity<Optional<UserModel>> getUser(@RequestBody SearchModel payload) {
+        String userId = payload.getQuery();
         return new ResponseEntity<>(userService.searchUserById(userId), HttpStatus.OK);
     }
 

@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -21,7 +22,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 import dev.lauren.astrotwin.Model.CelebModel;
+import dev.lauren.astrotwin.Model.SearchModel;
 import dev.lauren.astrotwin.Service.CelebService;
 
 @RestController
@@ -49,15 +52,16 @@ public class CelebController {
         }
     }
 
-    @PostMapping("/insertCeleb/{name}")
-    public ResponseEntity<CelebModel> insertCelebByName(@PathVariable String name) {
+    @PostMapping("/insertCelebByName")
+    public ResponseEntity<CelebModel> insertCelebByName(@RequestBody SearchModel payload) {
+        String name = payload.getQuery();
         System.out.println("insert celeb by name");
-        Map<String,String> payload= new HashMap<>();
-        payload.put("name", name);
-        payload.put("type", "name");
+        Map<String,String> insertPayload= new HashMap<>();
+        insertPayload.put("name", name);
+        insertPayload.put("type", "name");
         String astrologFilePath = env.getProperty("ASTROLOG_FPATH");
         try {
-            CelebModel response = celebService.insertCeleb(payload, astrologFilePath);
+            CelebModel response = celebService.insertCeleb(insertPayload, astrologFilePath);
             return new ResponseEntity<>(response, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
@@ -97,8 +101,9 @@ public class CelebController {
         }
     }
 
-    @GetMapping("/search/{name}")
-    public ResponseEntity<Optional<CelebModel>> searchCelebByName(@PathVariable String name) {
+    @GetMapping("/search")
+    public ResponseEntity<Optional<CelebModel>> searchCelebByName(@RequestBody SearchModel payload) {
+        String name = payload.getQuery();
         Optional<CelebModel> response = celebService.searchCelebByName(name);
         
         return new ResponseEntity<Optional<CelebModel>>(response, response.isPresent() ? HttpStatus.OK : HttpStatus.NOT_FOUND);
