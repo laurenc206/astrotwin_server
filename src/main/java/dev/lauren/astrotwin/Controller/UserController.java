@@ -3,7 +3,9 @@ import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.List;
 import java.util.Optional;
+
 import org.bson.Document;
+import org.jsoup.Jsoup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
@@ -14,16 +16,16 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
 import dev.lauren.astrotwin.Model.ContactForm;
 import dev.lauren.astrotwin.Model.MatchForm;
-import dev.lauren.astrotwin.Model.SearchModel;
 import dev.lauren.astrotwin.Model.UserForm;
 import dev.lauren.astrotwin.Model.UserModel;
 import dev.lauren.astrotwin.Service.EmailService;
 import dev.lauren.astrotwin.Service.MatchService;
 import dev.lauren.astrotwin.Service.UserService;
-import org.jsoup.Jsoup;
 
 
 @RestController
@@ -54,8 +56,8 @@ public class UserController {
     }
 
     @GetMapping("/getUser")
-    public ResponseEntity<Optional<UserModel>> getUser(@RequestBody SearchModel payload) {
-        String userId = payload.getQuery();
+    public ResponseEntity<Optional<UserModel>> getUser(@RequestParam String query) {
+        String userId = query;
         return new ResponseEntity<>(userService.searchUserById(userId), HttpStatus.OK);
     }
 
